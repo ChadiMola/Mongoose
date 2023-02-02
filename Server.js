@@ -1,6 +1,6 @@
 const express = require("express");
 const dbConnection = require("./config/dbConnection");
-const User = require("./models/Person");
+const Person = require("./models/Person");
 
 const createPerson = async () => {
   try {
@@ -25,87 +25,93 @@ const arrayOfPeople = [
 const createPeople = async () => {
   try {
     const people = await Person.create(arrayOfPeople);
-    console.log("People created and saved: ", people);
+    console.log("People created and saved");
   } catch (error) {
     console.error(error);
   }
 };
 //createPeople()
-const findPeopleByName = async (name) => {
+const findPeopleByName = async () => {
   try {
-    const people = await Person.find({ name });
+    const people = await Person.find({ name: "John" });
     console.log(people);
   } catch (error) {
     console.error(error);
   }
 };
 //findPeopleByName()
-const findPersonByFavoriteFood = async (food) => {
+const findPersonByFavoriteFood = async () => {
   try {
-    const person = await Person.findOne({ favoriteFoods: food });
+    const person = await Person.findOne({ favoriteFoods: "pizza" });
     console.log(person);
   } catch (error) {
     console.error(error);
   }
 };
-const findPersonById = async (id) => {
-    try {
-      const person = await Person.findById({ id });
-      console.log(person);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  async function updatePersonById(personId) {
-    try {
-      const person = await Person.findById(personId);
-      person.favoriteFoods.push("hamburger");
-      person.markModified("favoriteFoods");
-      await person.save();
-    } catch (error) {
-      console.error(error);
-    }
+//findPersonByFavoriteFood()
+const findPersonById = async () => {
+  try {
+    const person = await Person.findById("63db770d63e8391a91fc902f");
+    console.log(person);
+  } catch (error) {
+    console.error(error);
   }
-  async function updatePersonByName(personName) {
-    try {
-      const updatedPerson = await Person.findOneAndUpdate(
-        { name: personName },
-        { age: 20 },
-        { new: true }
-      );
-      return updatedPerson;
-    } catch (error) {
-      console.error(error);
-    }
+};
+// findPersonById()
+const updatePersonById = async () => {
+  try {
+    const person = await Person.findById("63db770d63e8391a91fc902f");
+    person.favoriteFoods.push("hamburger");
+    person.markModified("favoriteFoods");
+    await person.save();
+  } catch (error) {
+    console.error(error);
   }
-  async function deletePersonById(personId) {
-    try {
-      await Person.findByIdAndRemove(personId);
-    } catch (error) {
-      console.error(error);
-    }
+};
+//updatePersonById()
+const updatePersonByName = async () => {
+  try {
+    const updatedPerson = await Person.findOneAndUpdate(
+      { name: "Jim" },
+      { age: 20 },
+      { new: true }
+    );
+    return updatedPerson;
+  } catch (error) {
+    console.error(error);
   }
-  async function deletePeopleByName(name) {
-    try {
-      const result = await Person.remove({ name: name });
-      return result;
-    } catch (error) {
-      console.error(error);
-    }
+};
+// updatePersonByName()
+const deletePersonById = async () => {
+  try {
+    await Person.findByIdAndRemove("63db770d63e8391a91fc902f");
+  } catch (error) {
+    console.error(error);
   }
-  async function findPeopleWhoLikeBurritos() {
-    try {
-      const people = await Person.find({ favoriteFoods: "burrito" })
-        .sort({ name: 1 })
-        .limit(2)
-        .select("-age")
-        .exec();
-      return people;
-    } catch (error) {
-      console.error(error);
-    }
+};
+//deletePersonById()
+const deletePeopleByName = async () => {
+  try {
+    const result = await Person.remove({ name: "John" });
+    return result;
+  } catch (error) {
+    console.error(error);
   }
-  
+};
+//deletePeopleByName()
+const findPeopleWhoLikeBurritos = async () => {
+  try {
+    const people = await Person.find({ favoriteFoods: "burrito" })
+      .sort({ name: 1 })
+      .limit(2)
+      .select("-age")
+      .exec();
+    return people;
+  } catch (error) {
+    console.error(error);
+  }
+};
+//findPeopleWhoLikeBurritos()
 const app = express();
 require("dotenv").config();
 console.log(process.env.MONGO_URI);
